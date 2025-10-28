@@ -1,0 +1,392 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}My Awesome Cart{% endblock %}
+
+{% block css %}
+.col-md-3 {
+    display: inline-block;
+    margin-left: -4px;
+    margin-bottom: 20px;
+}
+
+.carousel-indicators .active {
+    background-color: #007bff;
+}
+
+.col-md-3 img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+body .carousel-indicator li {
+    background-color: #007bff;
+}
+
+body .carousel-indicators {
+    bottom: 0;
+}
+
+body .carousel-control-prev-icon,
+body .carousel-control-next-icon {
+    background-color: #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    top: auto;
+    bottom: auto;
+    padding-top: 222px;
+    width: 5%;
+}
+
+body .no-padding {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.card-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 200px;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.card-text {
+    color: #666;
+    font-size: 0.9rem;
+    flex-grow: 1;
+    margin-bottom: 15px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    border-radius: 6px;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    flex: 1;
+    min-width: 80px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+    border-color: #545b62;
+}
+
+.carousel-item {
+    padding: 0 15px;
+}
+
+h5.my-4 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-left: 15px;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+/* Cart popover styling */
+.popover {
+    max-width: 350px;
+}
+
+.popover-body {
+    padding: 15px;
+}
+
+/* Price styling */
+.price-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin: 10px 0;
+}
+
+.price-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.price-value {
+    font-weight: 700;
+    color: #28a745;
+    font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .col-md-3 {
+        margin-bottom: 15px;
+    }
+    
+    .card-body {
+        height: auto;
+        min-height: 200px;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn {
+        margin-bottom: 5px;
+    }
+    
+    .price-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
+{% endblock %}
+
+{% block body %}
+{% load static %}
+<div class="container">
+    <!--Slideshow starts here -->
+    {% for product, range, nSlides in allProds %}
+    <h5 class="my-4">Flash Sale On {{product.0.category}} - Recommended Items</h5>
+    <div class="row">
+        <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
+    <ul class="carousel-indicators">
+      <li data-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
+      {% for i in range %}
+                <li data-target="#demo{{forloop.parentloop.counter}}" data-slide-to="{{i}}"></li>
+      {% endfor %}
+    </ul>
+    <div class="container carousel-inner no-padding">
+      <div class="carousel-item active">
+        {% for i in product %}
+        <div class="col-xs-3 col-sm-3 col-md-3">
+          <div class="card" style="width: 18rem;">
+                             <img src='/media/{{i.image}}' class="card-img-top" alt="{{i.product_name}}">
+            <div class="card-body">
+                                 <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name}}</h5>
+                                 <p class="card-text">{{i.desc|slice:"0:53"}}...</p>
+                                 <div class="price-section mb-3">
+                                     <span class="price-label">Price:</span>
+                                     <span class="price-value" id="pricepr{{i.id}}">${{i.price}}</span>
+                                 </div>
+                                 <div class="btn-group">
+                                     <span id="divpr{{i.id}}" class="divpr">
+              <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
+                                     </span>
+                                     <a href="/shop/products/{{i.id}}">
+                                         <button id="qv{{i.id}}" class="btn btn-secondary">Quick View</button>
+                                     </a>
+                                 </div>
+            </div>
+          </div>
+        </div>
+                    {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+                </div>
+                <div class="carousel-item">
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+        </div>
+    <!-- left and right controls for the slide -->
+    <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+// Global cart variable
+var cart = {};
+
+// Initialize cart from localStorage
+function initializeCart() {
+    if (localStorage.getItem('cart') == null) {
+        cart = {};
+    } else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+    updateCart(cart);
+}
+
+// If the add to cart button is clicked, add/increment the item
+$(document).on('click', '.divpr button.cart', function(e) {
+    e.preventDefault();
+    var idstr = this.id.toString();
+    console.log('Add to cart clicked for:', idstr);
+    
+    if (cart[idstr] != undefined) {
+        cart[idstr][0] = cart[idstr][0] + 1;
+    } else {
+        var name = document.getElementById('name' + idstr).innerHTML;
+        var price = document.getElementById('price' + idstr).innerHTML.replace('$', '');
+        cart[idstr] = [1, name, parseFloat(price)];
+    }
+    updateCart(cart);
+});
+
+// Add Popover to cart
+$('#popcart').popover({
+    html: true,
+    trigger: 'click'
+});
+
+function updatePopover(cart) {
+    console.log('Updating popover with cart:', cart);
+    var popStr = "";
+    popStr = popStr + "<h5>Your Shopping Cart</h5><div class='mx-2 my-2'>";
+    var i = 1;
+    var totalItems = 0;
+    
+    var totalPrice = 0;
+    for (var item in cart) {
+        if (cart[item][0] > 0) {
+            totalItems += cart[item][0];
+            var itemPrice = cart[item][2] || 0;
+            var itemTotal = cart[item][0] * itemPrice;
+            totalPrice += itemTotal;
+            
+            popStr = popStr + "<div class='d-flex justify-content-between align-items-center mb-2'>";
+            popStr = popStr + "<div><b>" + i + "</b>. " + cart[item][1].slice(0, 15) + "...<br>";
+            popStr = popStr + "<small class='text-muted'>$" + itemPrice + " x " + cart[item][0] + "</small></div>";
+            popStr = popStr + "<div class='text-right'><span class='badge badge-primary'>$" + itemTotal.toFixed(2) + "</span></div>";
+            popStr = popStr + "</div>";
+            i = i + 1;
+        }
+    }
+    
+    if (totalItems === 0) {
+        popStr = popStr + "<p class='text-muted'>Your cart is empty</p>";
+    } else {
+        popStr = popStr + "<hr>";
+        popStr = popStr + "<div class='d-flex justify-content-between mb-2'><strong>Total Items: " + totalItems + "</strong></div>";
+        popStr = popStr + "<div class='d-flex justify-content-between'><strong>Total Price: $" + totalPrice.toFixed(2) + "</strong></div>";
+    }
+    
+    popStr = popStr + "</div>";
+    
+    if (totalItems > 0) {
+        popStr = popStr + "<div class='text-center mt-3'>";
+        popStr = popStr + "<a href='/shop/checkout' class='btn btn-success btn-sm mr-2'>Checkout</a>";
+        popStr = popStr + "<button class='btn btn-danger btn-sm' onclick='clearCart()'>Clear Cart</button>";
+        popStr = popStr + "</div>";
+    }
+    
+    document.getElementById('popcart').setAttribute('data-content', popStr);
+}
+
+function clearCart() {
+    cart = {};
+    localStorage.clear();
+    // Reset all buttons to original state
+    for (var item in cart) {
+        if (document.getElementById('div' + item)) {
+            document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>';
+        }
+    }
+    updateCart(cart);
+    $('#popcart').popover('hide');
+}
+
+function updateCart(cart) {
+    var sum = 0;
+    for (var item in cart) {
+        if (cart[item][0] > 0) {
+            sum = sum + cart[item][0];
+            var divElement = document.getElementById('div' + item);
+            if (divElement) {
+                // Keep only Add to Cart button, show quantity in button text
+                var buttonText = cart[item][0] > 1 ? 
+                    "Add To Cart (" + cart[item][0] + ")" : 
+                    "Add To Cart";
+                divElement.innerHTML = 
+                    "<button id='" + item + "' class='btn btn-primary cart'>" + buttonText + "</button> " +
+                    (cart[item][0] > 1 ? "<button id='remove" + item + "' class='btn btn-outline-danger btn-sm remove-item' title='Remove from cart'>×</button>" : "");
+            }
+        }
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    document.getElementById('cart').innerHTML = sum;
+    console.log('Cart updated:', cart);
+    updatePopover(cart);
+}
+
+// Remove item from cart (when × button is clicked)
+$(document).on("click", ".divpr button.remove-item", function(e) {
+    e.preventDefault();
+    var itemId = this.id.replace('remove', '');
+    console.log('Remove clicked for:', itemId);
+    if (cart[itemId]) {
+        delete cart[itemId];
+        document.getElementById('div' + itemId).innerHTML = '<button id="' + itemId + '" class="btn btn-primary cart">Add To Cart</button>';
+        updateCart(cart);
+    }
+});
+
+// Note: Plus/minus buttons removed - users can click "Add to Cart" multiple times to increase quantity
+
+// Initialize everything when document is ready
+$(document).ready(function() {
+    console.log('Document ready, initializing cart...');
+    initializeCart();
+    updatePopover(cart);
+});
+</script>
+{% endblock %}

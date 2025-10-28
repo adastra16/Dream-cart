@@ -1,0 +1,47 @@
+{% extends 'shop/basic.html' %}
+{% block title%} My Awesome Cart Tracker{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="col my-4">
+        <h2>Payment status regarding your order Id {{response.ORDERID}}</h2>
+        
+        {% if response.STATUS == 'TXN_SUCCESS' or response.RESPCODE == '01' %}
+        <div class="alert alert-success" role="alert">
+            <h4>✅ ORDER SUCCESS</h4>
+            <p>Your payment has been successfully processed!</p>
+            <p><strong>Amount:</strong> ₹{{response.TXNAMOUNT}}</p>
+            <p><strong>Bank Transaction ID:</strong> {{response.BANKTXNID}}</p>
+        </div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">
+            <h4>❌ ORDER FAILURE</h4>
+            <p><strong>Response Code:</strong> {{response.RESPCODE}}</p>
+            <p><strong>Message:</strong> {{response.RESPMSG}}</p>
+            <p><strong>Status:</strong> {{response.STATUS}}</p>
+            <hr>
+            <p><small>This is a staging environment. The transaction did not go through actual payment processing.</small></p>
+        </div>
+        {% endif%}
+        
+        <div class="mt-4">
+            <h5>Transaction Details:</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Order ID:</strong> {{response.ORDERID}}</li>
+                <li class="list-group-item"><strong>Merchant ID:</strong> {{response.MID}}</li>
+                <li class="list-group-item"><strong>Transaction Amount:</strong> ₹{{response.TXNAMOUNT}}</li>
+                <li class="list-group-item"><strong>Currency:</strong> {{response.CURRENCY}}</li>
+                <li class="list-group-item"><strong>Status:</strong> {{response.STATUS}}</li>
+            </ul>
+        </div>
+        
+        <div class="mt-4">
+            <a href="/shop/" class="btn btn-primary">Continue Shopping</a>
+            <a href="/shop/tracker/" class="btn btn-secondary">Track Your Order</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+</script>
+{% endblock %}
