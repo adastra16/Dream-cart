@@ -5,15 +5,19 @@ Django settings for mdc project.
 from pathlib import Path
 import os
 
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure--7zrzu+s4ljwu%2p)*he4z@q^&^zt=+u_$rl62!vquiru*cqvl'
 
-DEBUG = False  # Turn off debug in production
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False  # ✅ Must be False for deployment
 
+# ✅ Must exactly match your Render domain!
 ALLOWED_HOSTS = [
-    'dream-cart.onrender.com',  # Your Render domain
-    'localhost',                # For local testing
+    'dream-cart-2.onrender.com',  # your actual render app domain
+    'localhost',                  # for local testing
     '127.0.0.1',
 ]
 
@@ -31,7 +35,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # for serving static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ for serving static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,7 +64,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mdc.wsgi.application'
 
-# Database (SQLite)
+# Database (using SQLite for now)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -85,10 +89,11 @@ USE_TZ = True
 # Static files (CSS, JS, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Use Whitenoise to serve static files
+# ✅ Whitenoise setup for static files on Render
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
